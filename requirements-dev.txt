@@ -1,7 +1,7 @@
 # Everything needed to run the app, the UI and all quality gates.
 -r requirements.txt
 -r frontend/requirements.txt
-reportlab==5.0.1
+reportlab==5.1.0
 pytest==9.1.1
 pytest-asyncio==1.4.1
 pytest-cov==7.1.0
