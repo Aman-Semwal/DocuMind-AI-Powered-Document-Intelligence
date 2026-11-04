@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Run app (Ollama)", "type": "shell", "command": "python run_all.py", "problemMatcher": [] },
+    { "label": "Run app (offline demo)", "type": "shell", "command": "python run_all.py --demo --seed", "problemMatcher": [] },
+    { "label": "Test (all)", "type": "shell", "command": "pytest", "group": "test", "problemMatcher": [] },
+    { "label": "Test with coverage", "type": "shell", "command": "pytest --cov=app --cov-report=term-missing", "problemMatcher": [] },
+    { "label": "Lint + types", "type": "shell", "command": "ruff check app tests eval frontend && mypy", "problemMatcher": [] },
+    { "label": "Evaluation (real models)", "type": "shell", "command": "python -m eval.run_eval --ablation", "problemMatcher": [] }
+  ]
+}

@@ -1,0 +1,45 @@
+# One command:  docker compose up --build      (Ollama runs on the HOST, reached via host.docker.internal)
+services:
+  api:
+    build: .
+    env_file: .env
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      DATA_DIR: /app/data
+      CORS_ORIGINS: http://localhost:8501,http://127.0.0.1:8501
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
+    volumes:
+      - docqa-data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      API_BASE_URL: http://api:8000
+      API_KEY: ${API_KEY:?set API_KEY in .env}
+    ports:
+      - "8501:8501"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+volumes:
+  docqa-data:

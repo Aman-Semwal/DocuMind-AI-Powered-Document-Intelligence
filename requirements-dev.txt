@@ -1,0 +1,17 @@
+# Everything needed to run the app, the UI and all quality gates.
+-r requirements.txt
+-r frontend/requirements.txt
+reportlab==5.0.1
+pytest==9.1.1
+pytest-asyncio==1.4.1
+pytest-cov==7.1.0
+respx==0.23.1
+hypothesis==6.170.12
+ruff==0.17.3
+mypy==2.4.0
+bandit==1.9.4
+pip-audit
+pre-commit
+detect-secrets==1.5.0
+locust==2.47.0
+playwright==1.63.0

@@ -1,0 +1,59 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install -r requirements-dev.txt
+      - name: Lint and format
+        run: ruff check app tests eval frontend && ruff format --check app tests eval frontend
+      - name: Types (mypy strict)
+        run: mypy
+      - name: Security (bandit, pip-audit)
+        run: |
+          bandit -q -r app -ll
+          pip-audit -r requirements.txt -r frontend/requirements.txt
+      - name: Secrets scan
+        run: detect-secrets scan --exclude-files '^(eval/results/|docs/)' | python -c "import json,sys; d=json.load(sys.stdin); sys.exit(1 if d['results'] else 0)"
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install -r requirements-dev.txt
+      - name: Unit, integration, security and frontend tests (coverage gate 85%)
+        run: pytest --cov=app --cov-report=term-missing --cov-report=xml
+      - name: Evaluation smoke test (fake models: retrieval recall and citation gates)
+        run: python -m eval.run_eval --fake --strict
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-and-eval
+          path: |
+            coverage.xml
+            eval/results/latest.md
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [quality, tests]
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - name: Build images
+        run: docker compose build
+      - name: Smoke test (API container is healthy and not root)
+        run: |
+          docker compose up -d api
+          for i in $(seq 1 30); do curl -fs http://localhost:8000/health && break || sleep 2; done
+          test "$(docker compose exec -T api id -u)" != "0"
+          docker compose down -v
+
+  # End-to-end tests need a real Ollama model, so run them locally or on a self-hosted runner:
+  #   pytest -m e2e

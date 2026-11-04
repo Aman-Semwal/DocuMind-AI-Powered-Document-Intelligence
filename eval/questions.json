@@ -1,0 +1,23 @@
+{
+  "description": "Evaluation set for the two sample HR documents (leave policy, travel & expense policy). Gold evidence is located by searching the PDF for `phrase`, so the set survives regenerating the PDFs.",
+  "questions": [
+    {"id": "D1", "category": "direct", "question": "How many days of annual leave do full-time employees get per year?", "answerable": true, "must": ["24"], "gold": [{"document": "Northwind_Leave_Policy.pdf", "phrase": "24 paid days of annual leave"}]},
+    {"id": "D2", "category": "direct", "question": "When is a medical certificate required for sick leave?", "answerable": true, "must": ["2"], "gold": [{"document": "Northwind_Leave_Policy.pdf", "phrase": "more than 2 consecutive days"}]},
+    {"id": "D3", "category": "direct", "question": "How many weeks is maternity leave?", "answerable": true, "must": ["26"], "gold": [{"document": "Northwind_Leave_Policy.pdf", "phrase": "Maternity leave is 26 weeks"}]},
+    {"id": "D4", "category": "direct", "question": "What is the nightly hotel limit for Tier 1 cities such as London?", "answerable": true, "must": ["250"], "gold": [{"document": "Northwind_Travel_Expense_Policy.pdf", "phrase": "New York, London, Singapore"}]},
+    {"id": "D5", "category": "direct", "question": "Within how many days after a trip must the expense report be submitted?", "answerable": true, "must": ["30"], "gold": [{"document": "Northwind_Travel_Expense_Policy.pdf", "phrase": "within 30 days after the trip"}]},
+    {"id": "D6", "category": "direct", "question": "At what amount is a receipt required for an expense?", "answerable": true, "must": ["25"], "gold": [{"document": "Northwind_Travel_Expense_Policy.pdf", "phrase": "above USD 25"}]},
+    {"id": "M1", "category": "multi_section", "question": "What is the carry-forward limit for annual leave and by when must carried-forward days be used?", "answerable": true, "must": ["10", "31 March"], "gold": [{"document": "Northwind_Leave_Policy.pdf", "phrase": "maximum of 10 unused days"}]},
+    {"id": "M2", "category": "multi_section", "question": "How many paid sick days and how many paid casual days do employees get?", "answerable": true, "must": ["12", "6"], "gold": [{"document": "Northwind_Leave_Policy.pdf", "phrase": "12 paid sick days"}, {"document": "Northwind_Leave_Policy.pdf", "phrase": "Casual leave"}]},
+    {"id": "M3", "category": "multi_section", "question": "Who must approve a trip costing USD 12,000, and what is the meal allowance for international trips?", "answerable": true, "must": ["80"], "must_any": ["Chief Financial", "CFO"], "gold": [{"document": "Northwind_Travel_Expense_Policy.pdf", "phrase": "Chief Financial Officer"}, {"document": "Northwind_Travel_Expense_Policy.pdf", "phrase": "USD 80 per day"}]},
+    {"id": "M4", "category": "multi_section", "question": "How much notice must be given before parental leave starts, and how long is paternity leave?", "answerable": true, "must": ["8 weeks", "4 weeks"], "gold": [{"document": "Northwind_Leave_Policy.pdf", "phrase": "at least 8 weeks"}, {"document": "Northwind_Leave_Policy.pdf", "phrase": "Paternity leave is 4 weeks"}]},
+    {"id": "O1", "category": "out_of_document", "question": "What is the company's stock price today?", "answerable": false},
+    {"id": "O2", "category": "out_of_document", "question": "Who is the CEO of Northwind Labs?", "answerable": false},
+    {"id": "O3", "category": "out_of_document", "question": "What is the dress code in the office?", "answerable": false},
+    {"id": "A1", "category": "ambiguous", "question": "How many days off do I get?", "answerable": true, "must_any": ["24", "12", "depend", "type", "annual", "sick"], "gold": []},
+    {"id": "A2", "category": "ambiguous", "question": "What is the limit?", "answerable": null, "must_any": ["250", "180", "120", "25", "60", "80", "depend", "which", "clarif", "specify"], "gold": []},
+    {"id": "I1", "category": "incorrect_premise", "question": "Why does the policy give employees 30 days of annual leave?", "answerable": true, "must": ["24"], "gold": [{"document": "Northwind_Leave_Policy.pdf", "phrase": "24 paid days of annual leave"}]},
+    {"id": "I2", "category": "irrelevant", "question": "What is the weather in Delhi today?", "answerable": false},
+    {"id": "I3", "category": "irrelevant", "question": "Write me a poem about hotels.", "answerable": false}
+  ]
+}

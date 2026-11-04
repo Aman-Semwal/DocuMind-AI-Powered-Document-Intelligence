@@ -1,0 +1,53 @@
+[project]
+name = "document-qa-assistant"
+version = "1.0.0"
+description = "Local, private PDF question answering (RAG) with citations"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = ["data", "eval/results"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "C4", "SIM", "RUF"]
+ignore = ["S101", "B008", "RUF012", "SIM108", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "B", "RUF", "SIM", "E"]
+"frontend/tests/**" = ["S", "B", "RUF", "SIM", "E"]
+"eval/**" = ["S", "RUF"]
+"scripts/**" = ["S"]
+"run_all.py" = ["S603", "S607"]
+"frontend/app.py" = ["RUF001"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+warn_unused_ignores = false
+files = ["app"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["chromadb.*", "pymupdf.*", "sentence_transformers.*", "langchain_text_splitters.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "frontend/tests"]
+addopts = "-ra -q -m 'not e2e and not browser'"
+markers = [
+    "e2e: needs a running Ollama with the models pulled (run with: pytest -m e2e)",
+    "browser: needs a running UI and Playwright (run with: pytest -m browser)",
+]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["app"]
+branch = false
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+skip_covered = true

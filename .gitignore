@@ -1,0 +1,43 @@
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.pytest-tmp-*/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+coverage.xml
+data/
+!data/
+data/*
+!data/.gitkeep
+data_demo/
+tmp/
+.streamlit/secrets.toml
+frontend/.streamlit/secrets.toml
+*.part
+.DS_Store
+
+# Local databases, logs, and credentials
+*.sqlite
+*.sqlite3
+*.db
+*.log
+*.pem
+*.key
+
+# Evaluation artifacts derived from user-uploaded PDFs
+/eval/questions_uploaded_policies.json
+/eval/results/uploaded_policies/
+/docs/screenshots/03_insights.png
+
+# Unrelated local report files in the workspace root
+/battery_charge_controller_report.docx
+/battery_charge_controller_report.pdf
+/build_report.py

@@ -1,0 +1,3 @@
+# OPTIONAL: cross-encoder reranker (BAAI/bge-reranker-base on CPU). Biggest single accuracy gain on long PDFs.
+# Large download (PyTorch). Without it the app falls back to a lightweight lexical reranker.
+sentence-transformers>=3.0

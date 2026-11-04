@@ -1,0 +1,32 @@
+flowchart TB
+  subgraph ING["Ingestion (background worker, checkpointed)"]
+    U[PDF upload] --> V[Validate: type, magic bytes, size, pages, encryption, SHA-256]
+    V --> R[(SQLite registry<br/>DOC001, status, progress)]
+    V --> X[Extract per page<br/>PyMuPDF: text, headings, tables]
+    X --> C[Clean<br/>whitespace, hyphens, headers/footers]
+    C --> K[Chunk by section<br/>never across pages]
+    K --> E[Batch embed<br/>nomic-embed-text + cache]
+    E --> CH[(Chroma<br/>HNSW cosine)]
+    K --> BM[(BM25 index)]
+    K --> S[Summary + suggested questions]
+  end
+  subgraph QRY["Question answering"]
+    Q[Question] --> SAN[Sanitize + cache check]
+    SAN --> RW[Rewrite / decompose]
+    RW --> VS[Vector top-30]
+    RW --> KS[BM25 top-30]
+    VS --> RRF[Reciprocal Rank Fusion]
+    KS --> RRF
+    RRF --> RR[Cross-encoder rerank + MMR]
+    RR --> G{Evidence gate}
+    G -- weak --> NA[Not available<br/>no LLM call]
+    G -- ok --> P[Neighbour context + token budget]
+    P --> L[RAG prompt to Ollama<br/>streamed]
+    L --> VER[Verify sentences, numbers, entities]
+    VER --> A[Answer + citations from chunk metadata + confidence]
+  end
+  CH -.-> VS
+  BM -.-> KS
+  UI[Streamlit UI] -->|REST + SSE, X-API-Key| API[FastAPI]
+  API --> U
+  API --> Q
