@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # --- build stage: install wheels into a venv ---------------------------------------------
-FROM python:3.11-slim AS build
+FROM python:3.15-slim AS build
 ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -8,7 +8,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # --- runtime stage: slim, non-root, no secrets baked in ------------------------------------
-FROM python:3.11-slim
+FROM python:3.15-slim
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 PATH="/opt/venv/bin:$PATH" HOME=/tmp DATA_DIR=/app/data
 RUN groupadd --system --gid 10001 app \
  && useradd --system --uid 10001 --gid app --home-dir /tmp --shell /usr/sbin/nologin app \
