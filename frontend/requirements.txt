@@ -1,5 +1,5 @@
 # Streamlit UI dependencies (the UI talks to the backend only through its REST API).
-streamlit==1.66.1
+streamlit==1.67.0
 httpx==0.28.1
 pandas>=2.2,<4
 openpyxl>=3.1,<4
